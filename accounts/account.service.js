@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require("crypto");
 const { Op } = require('sequelize');
-const sendEmail = require('./helpers/send-email');
-const db = require('./helpers/db');
-const Role = require('./helpers/role');
+const sendEmail = require('../_helpers/send-email');
+const db = require('../_helpers/db');
+const Role = require('../_helpers/role');
 const { param } = require('../_helpers/swagger');
 
 module.exports = {
@@ -207,7 +207,7 @@ async function _delete(id) {
 // helper functions
 
 async function getAccount(id) {
-    const account = await db.Account.findByPK(id);
+    const account = await db.Account.findByPk(id); 
     if (!account) throw 'Account not found';
     return account;
 }
@@ -243,7 +243,7 @@ function randomTokenString() {
 
 function basicDetails(account) {
     const { id, title, firstName, lastName, email, role, created, updated, isVerified} = account;
-    return { id, title, fristName, lastName, email, role, created, updated, isVerified};
+    return { id, title, firstName, lastName, email, role, created, updated, isVerified};
 }
 
 async function sendVerificationEmail(account, origin) {
