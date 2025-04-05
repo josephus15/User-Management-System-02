@@ -27,5 +27,16 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
-  }
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NJLforthewin/user-management-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/NJLforthewin/user-management-system/issues"
+  },
+  "homepage": "https://github.com/NJLforthewin/user-management-system#readme"
 }
