@@ -47,4 +47,6 @@ testem.log
 
 # System Files
 .DS_Store
-Thumbs.db
+Thumbs.db# Angular cache
+.angular/cache/
+.angular/cache/**/*
