@@ -1,7 +1,6 @@
-// src/app/app.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router'; 
 import { AccountService } from './_services';
 import { User, Role } from './_models';
 import { AlertComponent } from './components/alert.component';
@@ -11,9 +10,9 @@ import { AlertComponent } from './components/alert.component';
   templateUrl: 'app.component.html',
   standalone: true,
   imports: [
-    CommonModule,  // For ngClass and other directives
+    CommonModule,  // For ngClass and other common directives
     RouterModule,  // For router-outlet
-    AlertComponent  // For <alert> component
+    AlertComponent // For <alert> component
   ]
 })
 export class AppComponent {

@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { JwtInterceptor, ErrorInterceptor, appInitializer } from './_helpers';
 import { AccountService } from './_services';
 import { AppComponent } from './app.component';
+import { AlertComponent } from './components/alert.component';
 import { fakeBackendProvider } from './_helpers';
 
 @NgModule({
@@ -19,10 +20,11 @@ import { fakeBackendProvider } from './_helpers';
         AppRoutingModule,
         CommonModule,
         RouterModule,
-        AppComponent  // MOVED TO IMPORTS INSTEAD OF DECLARATIONS
+        AlertComponent  // Keep this if AlertComponent is standalone
     ],
     declarations: [
-        // AppComponent REMOVED FROM HERE
+        // Remove AppComponent from here if it's in imports
+        // AppComponent should only be in ONE place - either imports or declarations
     ],
     providers: [
         { provide: APP_INITIALIZER, useFactory: appInitializer, multi: true, deps: [AccountService] },

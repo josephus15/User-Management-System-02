@@ -1,13 +1,16 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 import { Alert, AlertType } from '../_models/alert';
 import { AlertService } from '../_services/alert.service';
 
 @Component({ 
     selector: 'alert', 
-    templateUrl: 'alert.component.html' 
+    templateUrl: 'alert.component.html',
+    standalone: true,
+    imports: [CommonModule]  // Add CommonModule to fix the ngIf error
 })
 export class AlertComponent implements OnInit, OnDestroy {
     @Input() id = 'default-alert';
