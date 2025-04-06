@@ -24,3 +24,5 @@ const routes: Routes = [
     exports: [RouterModule]
 })
 export class AppRoutingModule { }
+// otherwise redirect to home// otherwise redirect to home
+// otherwise redirect to home
