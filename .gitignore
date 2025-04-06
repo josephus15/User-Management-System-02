@@ -50,3 +50,6 @@ testem.log
 Thumbs.db# Angular cache
 .angular/cache/
 .angular/cache/**/*
+# Angular cache
+.angular/
+.angular/**/*
