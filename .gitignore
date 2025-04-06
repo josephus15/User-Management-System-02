@@ -53,3 +53,5 @@ Thumbs.db# Angular cache
 # Angular cache
 .angular/
 .angular/**/*
+.angular/
+.angular/**/*
