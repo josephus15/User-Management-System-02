@@ -1,4 +1,4 @@
-const config = require('config.json');
+const config = require('../config.json');  // Updated to use relative path
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
 

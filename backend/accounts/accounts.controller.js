@@ -178,7 +178,7 @@ function createSchema(req, res, next) {
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-    role: Joi.string().valid(RoleAdmin, Role.User).required()
+    role: Joi.string().valid(Role.Admin, Role.User).required()
 });
 
 validateRequest(req, next, schema);
@@ -222,7 +222,7 @@ function update(req, res, next) {
 
 function _delete(req, res, next) {
     // users can delete their own account and admins can delete any account
-    if (Number(req.params.id) !== req.user.id && req.user.role !== RoleAdmin){
+    if (Number(req.params.id) !== req.user.id && req.user.role !== Role.Admin){
     return res.status(401).json({ message: 'Unauthorized' });
 
     }
