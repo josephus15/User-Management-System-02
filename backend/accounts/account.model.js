@@ -20,7 +20,11 @@ function model(sequelize) {
         updated: { type: DataTypes.DATE },
         isVerified: {
             type: DataTypes.VIRTUAL,
-            get() { return !!(this.verified || this.passwordReset); }
+            get() { 
+                const isVerified = !!(this.verified || this.passwordReset);
+                console.log(`isVerified calculation for ${this.email}: verified=${this.verified}, passwordReset=${this.passwordReset}, result=${isVerified}`);
+                return isVerified;
+            }
         }
     };
     const options = {

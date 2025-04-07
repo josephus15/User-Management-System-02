@@ -28,7 +28,7 @@ export class UpdateComponent implements OnInit {
         private accountService: AccountService,
         private alertService: AlertService
     ) { 
-        this.account = this.accountService.userValue;
+        this.account = this.accountService.accountValue;
     }
 
     ngOnInit() {

@@ -11,10 +11,7 @@ import { MustMatch } from '../_helpers';
 @Component({ 
     templateUrl: 'reset-password.component.html',
     standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule
-    ]
+    imports: [CommonModule, ReactiveFormsModule]
 })
 export class ResetPasswordComponent implements OnInit {
     form!: FormGroup;

@@ -8,6 +8,6 @@ export class DetailsComponent {
   account: any; 
 
   constructor(private accountService: AccountService) {
-    this.account = this.accountService.userValue; 
+    this.account = this.accountService.accountValue; 
   }
 }

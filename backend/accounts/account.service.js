@@ -27,23 +27,45 @@ module.exports = {
 async function authenticate({ email, password, ipAddress }) {
     const account = await db.Account.scope('withHash').findOne({ where: { email } });
 
-    if (!account || !account.isVerified || (!await bcrypt.compare(password, account.passwordHash))) {
-    throw 'Email or password is incorrect';
+    console.log(`Login attempt for ${email}`);
+    
+    if (!account) {
+        console.log(`Account not found for ${email}`);
+        throw 'Email or password is incorrect';
     }
 
-    // authentication successful so generate jwt and refresh tokens
+    console.log(`Account found, details:`);
+    console.log(`- Email: ${account.email}`);
+    console.log(`- Verified field: ${account.verified}`);
+    console.log(`- PasswordReset field: ${account.passwordReset}`);
+    console.log(`- isVerified computed value: ${account.isVerified}`);
+    
+    const verificationStatus = !!(account.verified || account.passwordReset);
+    console.log(`- Verification check result: ${verificationStatus}`);
+    
+    if (!account.isVerified) {
+        console.log(`Account ${email} is not verified`);
+        throw 'Please verify your email before logging in';
+    }
+    
+    const passwordValid = await bcrypt.compare(password, account.passwordHash);
+    if (!passwordValid) {
+        console.log(`Invalid password for ${email}`);
+        throw 'Email or password is incorrect';
+    }
+
     const jwtToken = generateJwtToken(account);
     const refreshToken = generateRefreshToken(account, ipAddress);
 
-    // save refresh token
     await refreshToken.save();
 
-    // return basic details and tokens
+    console.log(`Successfully authenticated ${email}`);
+    
     return {
-    ...basicDetails(account),
-    jwtToken,
-    refreshToken: refreshToken.token
-};
+        ...basicDetails(account),
+        jwtToken,
+        refreshToken: refreshToken.token
+    };
 }
 
 async function refreshToken({ token, ipAddress }) {
@@ -104,13 +126,36 @@ async function register(params, origin) {
 }
 
 async function verifyEmail({ token }) {
+    console.log(`Starting verification with token: ${token}`);
+    
     const account = await db.Account.findOne({ where: { verificationToken: token } });
-
-   if (!account) throw 'Verification failed';
-
-    account.verified = Date.now();
+    
+    if (!account) {
+        console.log(`Verification failed: No account found with token: ${token}`);
+        throw 'Verification failed';
+    }
+    
+    console.log(`Account found for verification: ${account.email}`);
+    console.log(`Current account state: verified=${account.verified}, verificationToken=${account.verificationToken}`);
+    
+    // Update the account
+    account.verified = new Date();
     account.verificationToken = null;
-    await account.save();
+    
+    try {
+        await account.save();
+        console.log(`Account saved after verification: ${account.email}`);
+        
+        // Double-check that the account was updated
+        const verifiedAccount = await db.Account.findByPk(account.id);
+        console.log(`Verified status after save: email=${verifiedAccount.email}, verified=${verifiedAccount.verified}, verificationToken=${verifiedAccount.verificationToken}`);
+        console.log(`isVerified computation: ${verifiedAccount.isVerified}`);
+        
+        return true;
+    } catch (error) {
+        console.error(`Error saving account during verification: ${error.message}`);
+        throw 'Verification failed due to database error';
+    }
 }
 
 async function forgotPassword({ email }, origin) {
@@ -249,8 +294,9 @@ function basicDetails(account) {
 async function sendVerificationEmail(account, origin) {
     let message;
     if (origin) {
+        // This is the part we need to ensure is working
         const verifyUrl = `${origin}/account/verify-email?token=${account.verificationToken}`;
-        message = `<p>Please click the below Link to verify your email address:</p>
+        message = `<p>Please click the below link to verify your email address:</p>
                    <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
     } else {
         message = `<p>Please use the below token to verify your email address with the <code>/account/verify-email</code> api route:</p>

@@ -1,29 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; 
-import { AccountService } from './_services';
-import { User, Role } from './_models';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { AlertComponent } from './components/alert.component';
+import { AccountService } from './_services/account.service';
+import { Role } from './_models/role';
+import { filter } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  standalone: true,
-  imports: [
-    CommonModule,  // For ngClass and other common directives
-    RouterModule,  // For router-outlet
-    AlertComponent // For <alert> component
-  ]
+    selector: 'app',
+    templateUrl: 'app.component.html',
+    standalone: true,
+    imports: [CommonModule, RouterModule, HttpClientModule, AlertComponent]
 })
-export class AppComponent {
-  Role = Role;
-  user?: User | null;
+export class AppComponent implements OnInit {
+    account: any;
+    Role = Role;
 
-  constructor(private accountService: AccountService) {
-    this.accountService.user.subscribe(x => this.user = x);
-  }
+    constructor(
+        private accountService: AccountService,
+        private router: Router
+    ) {
+        this.accountService.account.subscribe(x => {
+            console.log('Account updated:', x);
+            this.account = x;
+        });
+    }
 
-  logout() {
-    this.accountService.logout();
-  }
+    ngOnInit() {
+        // Log navigation events to debug routing
+        this.router.events.pipe(
+            filter(event => event instanceof NavigationEnd)
+        ).subscribe((event: NavigationEnd) => {
+            console.log('Navigation completed:', event.url);
+        });
+        
+        // Force navigation to account/login
+        console.log('Navigating to account/login...');
+        this.router.navigate(['account/login']);
+    }
+
+    logout() {
+        this.accountService.logout();
+    }
 }

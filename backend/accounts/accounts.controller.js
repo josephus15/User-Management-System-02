@@ -91,9 +91,12 @@ function registerSchema(req, res, next) {
 }
 
 function register(req, res, next) {
-    accountService.register(req.body, res.get('origin'))
-    .then(() => res.json({ message: 'Registration successful, please check your email for verification instructions' }))
-    .catch(next);
+    // Make sure we're getting the origin correctly
+    const origin = req.get('origin') || req.headers.origin || req.headers.referer || 'http://localhost:4200';
+    
+    accountService.register(req.body, origin)
+        .then(() => res.json({ message: 'Registration successful, please check your email for verification instructions' }))
+        .catch(next);
 }
 
 function verifyEmailSchema(req, res, next) {
@@ -104,9 +107,18 @@ function verifyEmailSchema(req, res, next) {
 }
 
 function verifyEmail(req, res, next) {
+    console.log('Verify email request received with body:', req.body);
+    console.log('Token from request:', req.body.token);
+    
     accountService.verifyEmail(req.body)
-    .then(() => res.json({ message: 'Verification successful, you can now login' }))
-    .catch(next);
+        .then(() => {
+            console.log('Verification successful in controller, sending success response');
+            res.json({ message: 'Verification successful, you can now login' });
+        })
+        .catch(error => {
+            console.error('Verification failed in controller with error:', error);
+            next(error);
+        });
 }
 
 function forgotPasswordSchema(req, res, next) {
