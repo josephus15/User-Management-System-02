@@ -15,7 +15,7 @@ import { AddEditComponent } from './add-edit.component';
         // Import standalone components
         ListComponent,
         AddEditComponent
-    ],
-    // No declarations
+    ]
+    // No declarations since they are standalone components
 })
 export class AccountsModule { }

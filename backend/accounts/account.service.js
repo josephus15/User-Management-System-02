@@ -242,14 +242,13 @@ function basicDetails(account) {
 
 async function sendVerificationEmail(account, origin) {
     let message;
-    if (origin) {
-        const verifyUrl = `${origin}/account/verify-email?token=${account.verificationToken}`;
-        message = `<p>Please click the below link to verify your email address:</p>
-                   <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
-    } else {
-        message = `<p>Please use the below token to verify your email address with the <code>/account/verify-email</code> api route:</p>
-                   <p><code>${account.verificationToken}</code></p>`;
-    }
+    // Use backend URL for verification
+    const backendUrl = 'http://localhost:4000';
+    const verifyUrl = `${backendUrl}/accounts/verify-email?token=${account.verificationToken}&origin=${encodeURIComponent(origin)}`;
+    
+    message = `<p>Please click the below link to verify your email address:</p>
+               <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
+    
     await sendEmail({
         to: account.email,
         subject: 'Sign-up Verification API - Verify Email',

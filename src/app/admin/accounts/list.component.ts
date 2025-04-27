@@ -1,10 +1,17 @@
+// src/app/admin/accounts/list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { AccountService } from '@app/_services';
 import { Account } from '@app/_models';
 
-@Component({ templateUrl: 'list.component.html' })
+@Component({
+    standalone: true,
+    imports: [CommonModule, RouterModule],
+    templateUrl: 'list.component.html'
+})
 export class ListComponent implements OnInit {
     accounts!: any[];
     

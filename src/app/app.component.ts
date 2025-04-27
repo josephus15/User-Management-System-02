@@ -24,20 +24,22 @@ export class AppComponent implements OnInit {
         this.accountService.account.subscribe(x => {
             console.log('Account updated:', x);
             this.account = x;
+            if (x) {
+                // User is logged in, navigate to home if on login page
+                if (this.router.url.includes('/account/login')) {
+                    this.router.navigate(['home']);
+                }
+            }
         });
     }
 
     ngOnInit() {
-        // Log navigation events to debug routing
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event: NavigationEnd) => {
             console.log('Navigation completed:', event.url);
         });
-        
-        // Force navigation to account/login
-        console.log('Navigating to account/login...');
-        this.router.navigate(['account/login']);
+
     }
 
     logout() {

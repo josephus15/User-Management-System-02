@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { AlertService } from '../_services';
 import { AccountService } from '../_services/account.service';
@@ -9,7 +9,13 @@ import { AccountService } from '../_services/account.service';
 @Component({
     templateUrl: 'register.component.html',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule] // Import required modules
+    imports:
+    [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule        
+        ] 
+        
 })
 export class RegisterComponent implements OnInit {
     form!: FormGroup;

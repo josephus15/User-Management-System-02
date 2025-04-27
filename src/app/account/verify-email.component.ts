@@ -17,7 +17,7 @@ enum EmailStatus {
     imports: [CommonModule, RouterModule]
 })
 export class VerifyEmailComponent implements OnInit {
-    EmailStatus = EmailStatus; // Make enum available in template
+    EmailStatus = EmailStatus; 
     emailStatus: EmailStatus = EmailStatus.Verifying;
     loading = true;
     token: string = '';

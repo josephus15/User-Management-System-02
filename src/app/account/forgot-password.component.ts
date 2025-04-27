@@ -7,7 +7,7 @@ import { AccountService, AlertService } from '../_services';
 @Component({
     templateUrl: 'forgot-password.component.html',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule] // Import required modules
+    imports: [CommonModule, ReactiveFormsModule] 
 })
 export class ForgotPasswordComponent implements OnInit {
     form!: FormGroup;
