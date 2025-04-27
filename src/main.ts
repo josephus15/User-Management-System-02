@@ -14,6 +14,6 @@ bootstrapApplication(AppComponent, {
         provideHttpClient(withInterceptorsFromDi()), 
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-       fakeBackendProvider 
+       //fakeBackendProvider 
     ]
 }).catch(err => console.error(err));
