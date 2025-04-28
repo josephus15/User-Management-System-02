@@ -3,11 +3,11 @@
         "host": "localhost",
         "port": 3306,
         "user": "roots",
-        "password": "Sancija-11",
-        "database": "node-mysql-signup-verification-api"
+        "password": "",
+        "database": "user-management-system"
         },
         "secret": "TcxtoIgRRbUqqgW174x1zAA==",
-        "emailFrom": "info@node-mysql-signup-verification-api.com",
+        "emailFrom": "info@user-management-system.com",
         "smtpOptions": {  
         "host": "smtp.ethereal.email",
         "port": 587,
