@@ -4,10 +4,10 @@
         "port": 3306,
         "user": "roots",
         "password": "",
-        "database": "user-management-system"
+        "database": "node-mysql-signup-verification-api"
         },
         "secret": "TcxtoIgRRbUqqgW174x1zAA==",
-        "emailFrom": "info@user-management-system.com",
+        "emailFrom": "info@node-mysql-signup-verification-api.com",
         "smtpOptions": {  
         "host": "smtp.ethereal.email",
         "port": 587,
