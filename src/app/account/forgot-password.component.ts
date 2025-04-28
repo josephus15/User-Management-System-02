@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { first } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { AccountService, AlertService } from '../_services';
 
 @Component({
@@ -17,7 +18,8 @@ export class ForgotPasswordComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         private accountService: AccountService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private router: Router
     ) {}
 
     ngOnInit() {

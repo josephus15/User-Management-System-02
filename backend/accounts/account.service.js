@@ -6,7 +6,6 @@ const { Op } = require('sequelize');
 const sendEmail = require('../_helpers/send-email');
 const db = require('../_helpers/db');
 const Role = require('../_helpers/role');
-const { param } = require('../_helpers/swagger');
 
 module.exports = {
     authenticate,
@@ -21,24 +20,44 @@ module.exports = {
     getById,
     create,
     update,
+    toggleActivation,
     delete: _delete
 };
 
+async function toggleActivation(id) {
+    const account = await getAccount(id);
+    
+    // Prevent deactivation for admin 
+    if (account.role === Role.Admin) {
+        throw 'Admin accounts cannot be deactivated';
+    }
+    
+    // isActive status
+    account.isActive = !account.isActive;
+    account.updated = Date.now();
+    await account.save();
+    
+    return basicDetails(account);
+}
+
 async function authenticate({ email, password, ipAddress }) {
     const account = await db.Account.scope('withHash').findOne({ where: { email } });
-
     console.log(`Login attempt for ${email}`);
     
     if (!account) {
         console.log(`Account not found for ${email}`);
         throw 'Email or password is incorrect';
     }
-
     console.log(`Account found, details:`);
     console.log(`- Email: ${account.email}`);
     console.log(`- Verified field: ${account.verified}`);
     console.log(`- PasswordReset field: ${account.passwordReset}`);
     console.log(`- isVerified computed value: ${account.isVerified}`);
+    
+    if (account.role !== Role.Admin && account.isActive === false) {
+        console.log(`Account ${email} is deactivated`);
+        throw 'Your account has been deactivated. Please contact an administrator.';
+    }
     
     const verificationStatus = !!(account.verified || account.passwordReset);
     console.log(`- Verification check result: ${verificationStatus}`);
@@ -53,7 +72,8 @@ async function authenticate({ email, password, ipAddress }) {
         console.log(`Invalid password for ${email}`);
         throw 'Email or password is incorrect';
     }
-
+    
+    // Generate JWT and refresh token
     const jwtToken = generateJwtToken(account);
     const refreshToken = generateRefreshToken(account, ipAddress);
 
@@ -81,10 +101,10 @@ async function refreshToken({ token, ipAddress }) {
     await newRefreshToken.save();
     const jwtToken = generateJwtToken(account);
     return {
-    ...basicDetails(account),
-    jwtToken,
-    refreshToken: newRefreshToken.token
-};
+        ...basicDetails(account),
+        jwtToken,
+        refreshToken: newRefreshToken.token
+    };
 }
 
 async function revokeToken({token, ipAddress}) {
@@ -116,9 +136,8 @@ async function verifyEmail({ token }) {
     }
     console.log(`Account found for verification: ${account.email}`);
     console.log(`Current account state: verified=${account.verified}, verificationToken=${account.verificationToken}`);
-        account.verified = new Date();
+    account.verified = new Date();
     account.verificationToken = null;
-    
     try {
         await account.save();
         console.log(`Account saved after verification: ${account.email}`);
@@ -140,9 +159,9 @@ async function forgotPassword({ email }, origin) {
     account.resetTokenExpires = new Date(Date.now() + 24*60*60*1000);
     await account.save();
     await sendPasswordResetEmail(account, origin);
- }
+}
 
- async function validateResetToken({ token }) {
+async function validateResetToken({ token }) {
     const account = await db.Account.findOne({
     where: {
     resetToken: token,
@@ -153,7 +172,7 @@ async function forgotPassword({ email }, origin) {
     if (!account) throw 'Invalid token';
 
     return account;
- }
+}
 
 async function resetPassword({ token, password }) {
     const account = await validateResetToken({ token });
@@ -203,21 +222,34 @@ async function update(id, params) {
 
 async function _delete(id) {
     const account = await getAccount(id);
-    await account.destroy();
+    
+    // Prevent deletetion for admin ONLY
+    if (account.role === Role.Admin) {
+        throw 'Admin accounts cannot be deleted';
+    }
+    account.isActive = false;
+    account.updated = Date.now();
+    await account.save();
+    
+    return basicDetails(account);
 }
+
 async function getAccount(id) {
     const account = await db.Account.findByPk(id); 
     if (!account) throw 'Account not found';
     return account;
 }
+
 async function getRefreshToken(token) {
     const refreshToken = await db.RefreshToken.findOne({ where: { token } });
     if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
     return refreshToken;
 }
+
 async function hash(password) {
     return await bcrypt.hash(password, 10);
 }
+
 function generateJwtToken(account) {
     return jwt.sign({ sub: account.id, id: account.id }, config.secret, { expiresIn: '15m' });
 }
@@ -236,8 +268,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const { id, title, firstName, lastName, email, role, created, updated, isVerified} = account;
-    return { id, title, firstName, lastName, email, role, created, updated, isVerified};
+    const { id, title, firstName, lastName, email, role, created, updated, isVerified, isActive } = account;
+    return { id, title, firstName, lastName, email, role, created, updated, isVerified, isActive };
 }
 
 async function sendVerificationEmail(account, origin) {

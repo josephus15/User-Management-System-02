@@ -19,8 +19,15 @@ router.get('/:id', authorize(), getById);
 router.post('/', authorize(Role.Admin), createSchema, create);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
+router.put('/:id/toggle-activation', authorize(Role.Admin), toggleActivation);
 
 module.exports = router;
+
+function toggleActivation(req, res, next) {
+    accountService.toggleActivation(req.params.id)
+        .then(account => res.json(account))
+        .catch(next);
+}
 
 function authenticateSchema(req, res, next) {
     const schema = Joi.object({
@@ -34,11 +41,18 @@ function authenticate(req, res, next) {
     const { email, password } = req.body;
     const ipAddress = req.ip;
     accountService.authenticate({ email, password, ipAddress })
-    .then(({ refreshToken, ...account }) => {
-    setTokenCookie(res, refreshToken);
-    res.json(account);
-    })
-    .catch(next);
+        .then(result => {
+            if (!result) {
+                return res.status(400).json({ message: 'Authentication failed' });
+            }
+            const { refreshToken, ...account } = result;
+            setTokenCookie(res, refreshToken);
+            res.json(account);
+        })
+        .catch(error => {
+            console.error('Authentication error:', error);
+            res.status(400).json({ message: typeof error === 'string' ? error : 'Authentication failed' });
+        });
 }
 
 function refreshToken(req, res, next) {
@@ -70,7 +84,6 @@ function revokeToken(req, res, next) {
         .then(() => res.json({ message: 'Token revoked' }))
         .catch(next);
 }
-
 function registerSchema(req, res, next) {
     const schema = Joi.object({
     title: Joi.string().required(),
@@ -124,7 +137,6 @@ function forgotPassword(req, res, next) {
     .then(() => res.json({ message: 'Please check your email for password reset instructions' }))
     .catch(next);
 }
-
 function validateResetTokenSchema(req, res, next) {
     const schema = Joi.object({
     token: Joi.string().required()
@@ -188,7 +200,6 @@ function create(req, res, next) {
     .then(account => res.json(account))
     .catch(next);
 }
-
 function updateSchema(req, res, next) {
     const schemaRules = {
     title: Joi.string().empty(''),
@@ -196,7 +207,8 @@ function updateSchema(req, res, next) {
     lastName: Joi.string().empty(''),
     email: Joi.string().email().empty(''),
     password: Joi.string().min(6).empty(''),
-    confirmPassword: Joi.string().valid(Joi.ref('password')).empty('')
+    confirmPassword: Joi.string().valid(Joi.ref('password')).empty(''),
+    isActive: Joi.boolean().empty('')
 };
 if (req.user.role === Role.Admin) {
     schemaRules.role = Joi.string().valid(Role.Admin, Role.User).empty('');
