@@ -67,6 +67,10 @@ app.get('/account/verify-email', (req, res) => {
 });
 
 app.use('/accounts', require('./accounts/accounts.controller'));
+app.use('/employees', require('./employees/index'));
+app.use('/departments', require('./departments/index'));
+app.use('/workflows', require('./workflows/index'));
+app.use('/requests', require('./requests/index'));
 app.use('/api-docs', require('./_helpers/swagger'));
 app.use(errorHandler);
 
