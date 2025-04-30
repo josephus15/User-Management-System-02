@@ -14,7 +14,6 @@ router.put('/:id/status', authorize(Role.Admin), updateStatus);
 
 async function create(req, res, next) {
     try {
-        // Create the request with associated request items
         const request = await db.Request.create({
             ...req.body,
             employeeId: req.body.employeeId
@@ -43,7 +42,6 @@ async function create(req, res, next) {
 
 async function getAll(req, res, next) {
     try {
-        // Admin can see all requests, regular users only see their own
         const options = {
             include: [
                 { model: db.Employee },
@@ -52,7 +50,6 @@ async function getAll(req, res, next) {
         };
         
         if (req.user.role !== Role.Admin) {
-            // Find employee associated with current account
             const employee = await db.Employee.findOne({ 
                 where: { accountId: req.user.id } 
             });
@@ -81,8 +78,6 @@ async function getById(req, res, next) {
         });
         
         if (!request) throw new Error('Request not found');
-        
-        // Check if user has permission to view this request
         if (req.user.role !== Role.Admin) {
             const employee = await db.Employee.findOne({ 
                 where: { accountId: req.user.id } 
@@ -103,8 +98,6 @@ async function update(req, res, next) {
     try {
         const request = await db.Request.findByPk(req.params.id);
         if (!request) throw new Error('Request not found');
-        
-        // Check if user has permission to update this request
         if (req.user.role !== Role.Admin) {
             const employee = await db.Employee.findOne({ 
                 where: { accountId: req.user.id } 
@@ -113,21 +106,14 @@ async function update(req, res, next) {
             if (employee.id !== request.employeeId) {
                 return res.status(403).json({ message: 'Unauthorized' });
             }
-            
-            // Regular users can only update pending requests
             if (request.status !== 'Pending') {
                 return res.status(400).json({ message: 'Cannot update request that is not pending' });
             }
         }
-        
-        // Update request and items
         await request.update(req.body);
         
         if (req.body.items && req.body.items.length) {
-            // Delete existing items
             await db.RequestItem.destroy({ where: { requestId: request.id } });
-            
-            // Create new items
             const requestItems = req.body.items.map(item => ({
                 ...item,
                 requestId: request.id
@@ -152,8 +138,6 @@ async function _delete(req, res, next) {
     try {
         const request = await db.Request.findByPk(req.params.id);
         if (!request) throw new Error('Request not found');
-        
-        // Check if user has permission to delete this request
         if (req.user.role !== Role.Admin) {
             const employee = await db.Employee.findOne({ 
                 where: { accountId: req.user.id } 
@@ -162,8 +146,6 @@ async function _delete(req, res, next) {
             if (employee.id !== request.employeeId) {
                 return res.status(403).json({ message: 'Unauthorized' });
             }
-            
-            // Regular users can only delete pending requests
             if (request.status !== 'Pending') {
                 return res.status(400).json({ message: 'Cannot delete request that is not pending' });
             }
@@ -180,13 +162,10 @@ async function updateStatus(req, res, next) {
     try {
         const request = await db.Request.findByPk(req.params.id);
         if (!request) throw new Error('Request not found');
-        
-        // Only admin can update status
         if (req.user.role !== Role.Admin) {
             return res.status(403).json({ message: 'Unauthorized' });
         }
-        
-        // Validate status value
+
         if (!['Pending', 'Approved', 'Rejected'].includes(req.body.status)) {
             return res.status(400).json({ message: 'Invalid status value' });
         }
@@ -208,5 +187,4 @@ async function updateStatus(req, res, next) {
         next(err); 
     }
 }
-
 module.exports = router;
