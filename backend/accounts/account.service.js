@@ -27,14 +27,16 @@ module.exports = {
 async function toggleActivation(id) {
     const account = await getAccount(id);
     
-    // Prevent deactivation for admin 
+    // Prevent deactivation for admin accounts
     if (account.role === Role.Admin) {
         throw 'Admin accounts cannot be deactivated';
     }
-    
-    // isActive status
+    // Toggle the isActive status
     account.isActive = !account.isActive;
-    account.updated = Date.now();
+
+
+    account.updated = new Date();
+    
     await account.save();
     
     return basicDetails(account);
@@ -223,15 +225,15 @@ async function update(id, params) {
 async function _delete(id) {
     const account = await getAccount(id);
     
-    // Prevent deletetion for admin ONLY
+    // Prevent deletion for admin accounts
     if (account.role === Role.Admin) {
         throw 'Admin accounts cannot be deleted';
     }
-    account.isActive = false;
-    account.updated = Date.now();
-    await account.save();
     
-    return basicDetails(account);
+    // Perform hard delete from database
+    await account.destroy();
+    
+    return { message: 'Account deleted successfully' };
 }
 
 async function getAccount(id) {

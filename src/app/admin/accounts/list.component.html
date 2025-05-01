@@ -57,7 +57,7 @@
                                             <span *ngIf="account.isDeleting" class="spinner-border spinner-border-sm"></span>
                                             <i *ngIf="!account.isDeleting" class="bi bi-trash"></i>
                                         </button>
-                                        
+
                                         <!-- Show activate/deactivate button for non-admin users -->
                                         <button *ngIf="account.role !== 'Admin'" (click)="toggleActivation(account)" 
                                                 class="btn btn-sm"

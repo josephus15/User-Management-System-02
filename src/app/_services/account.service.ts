@@ -18,7 +18,6 @@ export class AccountService {
         this.accountSubject = new BehaviorSubject<Account | null>(null);
         this.account = this.accountSubject.asObservable();
         
-        // Check if user is logged in from localStorage
         const storedAccount = localStorage.getItem('account');
         if (storedAccount) {
             const account = JSON.parse(storedAccount);
@@ -42,7 +41,6 @@ export class AccountService {
     }
 
     logout() {
-
         this.stopRefreshTokenTimer();
         
         localStorage.removeItem('account');
@@ -65,16 +63,16 @@ export class AccountService {
             }));
     }
 
-    getAll() {
+    getAll(): Observable<Account[]> {
         return this.http.get<Account[]>(`${environment.apiUrl}/accounts`);
     }
 
-    getById(id: string) {
+    getById(id: string | number): Observable<Account> {
         return this.http.get<Account>(`${environment.apiUrl}/accounts/${id}`);
     }
 
     create(params: any) {
-        return this.http.post(`${environment.apiUrl}/accounts`, params);
+        return this.http.post<Account>(`${environment.apiUrl}/accounts`, params);
     }
 
     forgotPassword(email: string) {
@@ -88,21 +86,31 @@ export class AccountService {
     verifyEmail(token: string) {
         return this.http.post(`${environment.apiUrl}/accounts/verify-email`, { token });
     }
-
-    update(id: string, params: any) {
-        return this.http.put(`${environment.apiUrl}/accounts/${id}`, params)
+    
+    deactivateAccount(id: string | number) {
+        return this.http.delete<void>(`${environment.apiUrl}/accounts/${id}`)
+            .pipe(finalize(() => {
+                if (id === this.accountValue?.id) {
+                    this.logout();
+                }
+            }));
+    }
+    
+    
+    update(id: string | number, params: any) {
+        return this.http.put<Account>(`${environment.apiUrl}/accounts/${id}`, params)
             .pipe(map((account: Account) => {
                 if (account.id === this.accountValue?.id) {
-                    account = { ...this.accountValue, ...account };
-                    this.accountSubject.next(account);
-                    localStorage.setItem('account', JSON.stringify(account));
+                    const updatedAccount = { ...this.accountValue, ...account };
+                    this.accountSubject.next(updatedAccount);
+                    localStorage.setItem('account', JSON.stringify(updatedAccount));
                 }
                 return account;
             }));
     }
 
-    delete(id: string) {
-        return this.http.delete(`${environment.apiUrl}/accounts/${id}`)
+    delete(id: string | number) {
+        return this.http.delete<void>(`${environment.apiUrl}/accounts/${id}`)
             .pipe(finalize(() => {
                 if (id === this.accountValue?.id) {
                     this.logout();
@@ -126,6 +134,8 @@ export class AccountService {
     }
 
     private stopRefreshTokenTimer() {
-        clearTimeout(this.refreshTokenTimeout);
+        if (this.refreshTokenTimeout) {
+            clearTimeout(this.refreshTokenTimeout);
+        }
     }
 }

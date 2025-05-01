@@ -3,17 +3,17 @@
         "host": "localhost",
         "port": 3306,
         "user": "roots",
-        "password": "",
-        "database": ""
+        "password": "Sancija-11",
+        "database": "node-mysql-signup-verification-api"
         },
         "secret": "TcxtoIgRRbUqqgW174x1zAA==",
-        "emailFrom": "info@.com",
+        "emailFrom": "info@node-mysql-signup-verification-api.com",
         "smtpOptions": {  
         "host": "smtp.ethereal.email",
         "port": 587,
         "auth": {
-        "user": "",
-        "pass": ""
+        "user": "ladarius66@ethereal.email",
+        "pass": "HaCUhbSy1XEmTpTExr"
         }
         }
     }

@@ -8,7 +8,7 @@ export class Account {
     email?: string;
     password?: string;
     confirmPassword?: string;
-    role?: Role; // Use the Role enum here
+    role?: Role; 
     jwtToken?: string;
     refreshToken?: string;
     isVerified?: boolean;

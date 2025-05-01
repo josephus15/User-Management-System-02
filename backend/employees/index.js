@@ -11,7 +11,6 @@ router.get('/:id', authorize(), getById);
 router.put('/:id', authorize(Role.Admin), update);
 router.delete('/:id', authorize(Role.Admin), _delete);
 router.post('/:id/transfer', authorize(Role.Admin), transfer);
-
 async function create(req, res, next) {
     try {
         const employee = await db.Employee.create(req.body);
@@ -20,7 +19,6 @@ async function create(req, res, next) {
         next(err); 
     }
 }
-
 async function getAll(req, res, next) {
     try {
         const employees = await db.Employee.findAll({
@@ -31,7 +29,6 @@ async function getAll(req, res, next) {
         next(err); 
     }
 }
-
 async function getById(req, res, next) {
     try {
         const employee = await db.Employee.findByPk(req.params.id, {
@@ -43,7 +40,6 @@ async function getById(req, res, next) {
         next(err); 
     }
 }
-
 async function update(req, res, next) {
     try {
         const employee = await db.Employee.findByPk(req.params.id);
@@ -54,7 +50,6 @@ async function update(req, res, next) {
         next(err); 
     }
 }
-
 async function _delete(req, res, next) {
     try {
         const employee = await db.Employee.findByPk(req.params.id);
@@ -65,7 +60,6 @@ async function _delete(req, res, next) {
         next(err); 
     }
 }
-
 async function transfer(req, res, next) {
     try {
         const employee = await db.Employee.findByPk(req.params.id);
@@ -81,5 +75,4 @@ async function transfer(req, res, next) {
         next(err); 
     }
 }
-
 module.exports = router;

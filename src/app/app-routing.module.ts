@@ -8,22 +8,21 @@ import { Role } from './_models';
 const accountModule = () => import('./account/account.module').then(x => x.AccountModule);
 const profileModule = () => import('./profile/profile.module').then(x => x.ProfileModule);
 const adminModule = () => import('./admin/admin.module').then(x => x.AdminModule);
+const employeeModule = () => import('./employee/employee.module').then(x => x.EmployeeModule);
+const departmentModule = () => import('./department/department.module').then(x => x.DepartmentModule);
+const workflowModule = () => import('./workflow/workflow.module').then(x => x.WorkflowModule);
+const requestModule = () => import('./request/request.module').then(x => x.RequestModule);
 
 export const routes: Routes = [
-    // Home route with protection
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-    
-    // Default route goes to home (which will redirect to login if not authenticated)
     { path: '', redirectTo: 'home', pathMatch: 'full' },
-    
-    // Account module for login/register
     { path: 'account', loadChildren: accountModule },
-    
-    // Protected routes
     { path: 'profile', loadChildren: profileModule, canActivate: [AuthGuard] },
     { path: 'admin', loadChildren: adminModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
-    
-    // Catch all route - goes to home
+    { path: 'employee', loadChildren: employeeModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
+    { path: 'department', loadChildren: departmentModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
+    { path: 'workflow', loadChildren: workflowModule, canActivate: [AuthGuard], data: { roles: [Role.Admin] } },
+    { path: 'request', loadChildren: requestModule, canActivate: [AuthGuard] },
     { path: '**', redirectTo: 'home' }
 ];
 

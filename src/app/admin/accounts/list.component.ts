@@ -1,4 +1,3 @@
-// src/app/admin/accounts/list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
 import { RouterModule } from '@angular/router';
@@ -25,18 +24,21 @@ export class ListComponent implements OnInit {
     
     deleteAccount(id: string) {
         const account = this.accounts.find(x => x.id === id);
-        account.isDeleting = true;
-        this.accountService.delete(id)
-            .pipe(first())
-            .subscribe({
-                next: () => {
-                    this.accounts = this.accounts.filter(x => x.id !== id);
-                },
-                error: (error: any) => {
-                    account.isDeleting = false;
-                    console.error(error);
-                }
-            });
+        if (confirm('Are you sure you want to delete this account? This action cannot be undone.')) {
+            account.isDeleting = true;
+            this.accountService.delete(id)
+                .pipe(first())
+                .subscribe({
+                    next: () => {
+                        // Remove from the list completely
+                        this.accounts = this.accounts.filter(x => x.id !== id);
+                    },
+                    error: (error: any) => {
+                        account.isDeleting = false;
+                        console.error(error);
+                    }
+                });
+        }
     }
     
     toggleActivation(account: any) {
