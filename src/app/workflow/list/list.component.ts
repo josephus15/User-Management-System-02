@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 import { WorkflowService, AlertService } from '@app/_services';
 import { Workflow } from '@app/_models';
 
-@Component({ templateUrl: 'list.component.html' })
+@Component({ 
+    standalone: true,
+    imports: [CommonModule, RouterModule],
+    templateUrl: 'list.component.html' 
+})
 export class ListComponent implements OnInit {
     workflows: Workflow[] = [];
     loading = false;

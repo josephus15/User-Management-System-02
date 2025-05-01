@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { RequestService, EmployeeService, AlertService } from '@app/_services';
 import { Employee } from '@app/_models';
 
-@Component({ templateUrl: 'add-edit.component.html' })
+@Component({ 
+    standalone: true,
+    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    templateUrl: 'add-edit.component.html' 
+})
 export class AddEditComponent implements OnInit {
     form!: FormGroup;
     id!: number;
@@ -37,12 +43,10 @@ export class AddEditComponent implements OnInit {
             items: this.formBuilder.array([])
         });
 
-        // Add at least one item field by default for new requests
         if (this.isAddMode) {
             this.addItem();
         }
 
-        // Pre-populate employee if passed as query parameter
         const employeeId = this.route.snapshot.queryParams['employeeId'];
         if (employeeId) {
             this.form.patchValue({ employeeId });
@@ -60,7 +64,6 @@ export class AddEditComponent implements OnInit {
                             description: request.description
                         });
                         
-                        // Clear and add items from the request
                         this.items.clear();
                         if (request.requestItems && request.requestItems.length) {
                             request.requestItems.forEach(item => {
@@ -85,7 +88,7 @@ export class AddEditComponent implements OnInit {
                 );
         }
     }
-
+    
     private loadEmployees() {
         this.employeeService.getAll()
             .pipe(first())
@@ -95,11 +98,9 @@ export class AddEditComponent implements OnInit {
             );
     }
 
-    // convenience getters
     get f() { return this.form.controls; }
     get items() { return this.form.get('items') as FormArray; }
     
-    // add new item to the form
     addItem() {
         this.items.push(this.formBuilder.group({
             name: ['', [Validators.required, Validators.maxLength(100)]],
@@ -108,7 +109,6 @@ export class AddEditComponent implements OnInit {
         }));
     }
     
-    // remove item from the form
     removeItem(index: number) {
         if (this.items.length > 1) {
             this.items.removeAt(index);
@@ -120,10 +120,8 @@ export class AddEditComponent implements OnInit {
     onSubmit() {
         this.submitted = true;
 
-        // reset alerts on submit
         this.alertService.clear();
 
-        // stop here if form is invalid
         if (this.form.invalid) {
             return;
         }
@@ -135,7 +133,7 @@ export class AddEditComponent implements OnInit {
             this.updateRequest();
         }
     }
-
+    
     private createRequest() {
         this.requestService.create(this.form.value)
             .pipe(first())

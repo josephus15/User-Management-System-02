@@ -25,7 +25,6 @@ export class AppComponent implements OnInit {
             console.log('Account updated:', x);
             this.account = x;
             if (x) {
-                // User is logged in, navigate to home if on login page
                 if (this.router.url.includes('/account/login')) {
                     this.router.navigate(['home']);
                 }

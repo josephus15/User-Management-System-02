@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header">Verify Email</div>
     <div class="card-body">
-        <!-- Verifying state -->
+
         <div *ngIf="emailStatus === EmailStatus.Verifying" class="text-center">
             <div *ngIf="loading" class="mb-3">
                 <span class="spinner-border spinner-border-lg"></span>
@@ -9,13 +9,13 @@
             </div>
         </div>
         
-        <!-- Success state -->
+
         <div *ngIf="emailStatus === EmailStatus.Success" class="alert alert-success">
             <p>Your email has been verified successfully!</p>
             <p>You will be redirected to the login page momentarily...</p>
         </div>
         
-        <!-- Failure state -->
+
         <div *ngIf="emailStatus === EmailStatus.Failed" class="alert alert-danger">
             <p>Email verification failed.</p>
             <p>The verification link may have expired or already been used.</p>
@@ -24,7 +24,7 @@
             <a routerLink="../login" class="btn btn-link p-0">return to login</a>
         </div>
         
-        <!-- Debug info (you can remove this in production) -->
+
         <div class="mt-4 small text-muted">
             <p>Debugging info:</p>
             <p>Token: {{token ? (token.substring(0, 15) + '...') : 'None'}}</p>

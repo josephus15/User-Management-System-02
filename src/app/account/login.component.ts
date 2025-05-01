@@ -9,7 +9,7 @@ import { AccountService } from '../_services/account.service';
 @Component({
     templateUrl: 'login.component.html',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterModule]// Import required modules
+    imports: [CommonModule, ReactiveFormsModule, RouterModule]
 })
 export class LoginComponent implements OnInit {
     form!: FormGroup;

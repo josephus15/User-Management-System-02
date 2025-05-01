@@ -1,5 +1,4 @@
 <div class="app-container" [ngClass]="{ 'bg-light': account }">
-    <!-- main nav -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm" *ngIf="account">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">User Management System</a>
@@ -36,12 +35,9 @@
         </div>
     </nav>
 
-    <!-- subnav router outlet -->
     <router-outlet name="subnav"></router-outlet>
     
-    <!-- global alert -->
     <alert></alert>
     
-    <!-- main router outlet -->
     <router-outlet></router-outlet>
 </div>

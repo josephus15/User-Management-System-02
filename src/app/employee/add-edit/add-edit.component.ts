@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { EmployeeService, DepartmentService, AccountService, AlertService } from '@app/_services';
 import { Account, Department } from '@app/_models';
 
-@Component({ templateUrl: 'add-edit.component.html' })
+@Component({ 
+    standalone: true,
+    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    templateUrl: 'add-edit.component.html' 
+})
 export class AddEditComponent implements OnInit {
     form!: FormGroup;
     id!: number;
@@ -42,7 +48,7 @@ export class AddEditComponent implements OnInit {
             hireDate: ['', Validators.required],
             status: ['Active', Validators.required]
         });
-
+        
         if (!this.isAddMode) {
             this.loading = true;
             this.employeeService.getById(this.id)
@@ -86,7 +92,7 @@ export class AddEditComponent implements OnInit {
                 error => this.alertService.error('Error loading departments: ' + error)
             );
     }
-
+    
     // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 

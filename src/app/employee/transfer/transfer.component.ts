@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';  
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; 
 import { first } from 'rxjs/operators';
 
 import { EmployeeService, DepartmentService, AlertService } from '@app/_services';
 import { Employee, Department } from '@app/_models';
 
-@Component({ templateUrl: 'transfer.component.html' })
+@Component({ 
+    standalone: true,  
+    imports: [CommonModule, ReactiveFormsModule], 
+    templateUrl: 'transfer.component.html' 
+})
 export class TransferComponent implements OnInit {
     form!: FormGroup;
     id!: number;
@@ -32,7 +37,6 @@ export class TransferComponent implements OnInit {
             departmentId: ['', Validators.required]
         });
         
-        // Load employee and departments
         this.loadEmployeeDetails();
         this.loadDepartments();
     }
@@ -52,8 +56,7 @@ export class TransferComponent implements OnInit {
                 }
             );
     }
-
-    private loadDepartments() {
+     private loadDepartments() {
         this.departmentService.getAll()
             .pipe(first())
             .subscribe(
@@ -62,7 +65,6 @@ export class TransferComponent implements OnInit {
             );
     }
 
-    // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
     onSubmit() {

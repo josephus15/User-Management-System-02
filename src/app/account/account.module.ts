@@ -17,7 +17,6 @@ import { ForgotPasswordComponent } from './forgot-password.component';
         ReactiveFormsModule,
         RouterModule,
         AccountRoutingModule,
-        // Import standalone components here
         LayoutComponent,
         LoginComponent,
         RegisterComponent,
@@ -26,7 +25,6 @@ import { ForgotPasswordComponent } from './forgot-password.component';
         ForgotPasswordComponent
     ],
     declarations: [
-        // No declarations for standalone components
     ]
 })
 export class AccountModule {}

@@ -1,53 +1,59 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { WorkflowService, AlertService } from '@app/_services';
-import { Workflow } from '@app/_models';
+import { RequestService, AlertService } from '@app/_services';
+import { Request } from '@app/_models';
 
-@Component({ templateUrl: 'list.component.html' })
+@Component({ 
+    standalone: true,
+    imports: [CommonModule, RouterModule],
+    templateUrl: 'list.component.html' 
+})
 export class ListComponent implements OnInit {
-    workflows: Workflow[] = [];
+    requests: Request[] = [];
     loading = false;
     deleting = false;
 
     constructor(
-        private workflowService: WorkflowService,
+        private requestService: RequestService,
         private alertService: AlertService
     ) { }
 
     ngOnInit() {
         this.loading = true;
-        this.loadWorkflows();
+        this.loadRequests();
     }
 
-    private loadWorkflows() {
-        this.workflowService.getAll()
+    private loadRequests() {
+        this.requestService.getAll()
             .pipe(first())
             .subscribe(
-                (workflows: Workflow[]) => {
-                    this.workflows = workflows;
+                requests => {
+                    this.requests = requests;
                     this.loading = false;
                 },
-                (error: any) => {
-                    this.alertService.error('Error loading workflows: ' + error);
+                error => {
+                    this.alertService.error('Error loading requests: ' + error);
                     this.loading = false;
                 }
             );
     }
 
-    deleteWorkflow(id: number) {
-        if (confirm('Are you sure you want to delete this workflow?')) {
+    deleteRequest(id: number) {
+        if (confirm('Are you sure you want to delete this request?')) {
             this.deleting = true;
-            this.workflowService.delete(id)
+            this.requestService.delete(id)
                 .pipe(first())
                 .subscribe(
                     () => {
-                        this.alertService.success('Workflow deleted successfully');
-                        this.workflows = this.workflows.filter(x => x.id !== id);
+                        this.alertService.success('Request deleted successfully');
+                        this.requests = this.requests.filter(x => x.id !== id);
                         this.deleting = false;
                     },
-                    (error: any) => {
-                        this.alertService.error('Error deleting workflow: ' + error);
+                    error => {
+                        this.alertService.error('Error deleting request: ' + error);
                         this.deleting = false;
                     }
                 );

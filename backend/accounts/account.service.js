@@ -27,11 +27,9 @@ module.exports = {
 async function toggleActivation(id) {
     const account = await getAccount(id);
     
-    // Prevent deactivation for admin accounts
     if (account.role === Role.Admin) {
         throw 'Admin accounts cannot be deactivated';
     }
-    // Toggle the isActive status
     account.isActive = !account.isActive;
 
 
@@ -75,7 +73,6 @@ async function authenticate({ email, password, ipAddress }) {
         throw 'Email or password is incorrect';
     }
     
-    // Generate JWT and refresh token
     const jwtToken = generateJwtToken(account);
     const refreshToken = generateRefreshToken(account, ipAddress);
 
@@ -94,7 +91,6 @@ async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
     const account = await refreshToken.getAccount();
 
-    // replace old refresh token with a new one and save
     const newRefreshToken = generateRefreshToken(account, ipAddress);
     refreshToken.revoked = Date.now();
     refreshToken.revokedByIp = ipAddress;

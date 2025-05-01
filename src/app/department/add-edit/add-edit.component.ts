@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { DepartmentService, AlertService } from '@app/_services';
 
-@Component({ templateUrl: 'add-edit.component.html' })
+@Component({ 
+    standalone: true,
+    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    templateUrl: 'add-edit.component.html' 
+})
 export class AddEditComponent implements OnInit {
-    form!: FormGroup;  // Added non-null assertion operator
-    id!: number;       // Added non-null assertion operator
-    isAddMode!: boolean; // Added non-null assertion operator
+    form!: FormGroup;  
+    id!: number;       
+    isAddMode!: boolean; 
     loading = false;
     submitted = false;
 
@@ -48,16 +54,14 @@ export class AddEditComponent implements OnInit {
         }
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.form.controls; }
+
+  get f() { return this.form.controls; }
 
     onSubmit() {
         this.submitted = true;
 
-        // reset alerts on submit
         this.alertService.clear();
 
-        // stop here if form is invalid
         if (this.form.invalid) {
             return;
         }

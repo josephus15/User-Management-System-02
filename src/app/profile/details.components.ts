@@ -1,4 +1,3 @@
-// src/app/profile/details.component.ts
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';

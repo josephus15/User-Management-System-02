@@ -1,11 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; 
 import { first } from 'rxjs/operators';
 
 import { EmployeeService, WorkflowService, RequestService, AlertService } from '@app/_services';
 import { Employee, Workflow, Request } from '@app/_models';
 
-@Component({ templateUrl: 'details.component.html' })
+@Component({ 
+    templateUrl: 'details.component.html',
+    imports: [CommonModule, RouterModule],
+    standalone: true
+
+})
 export class DetailsComponent implements OnInit {
     id!: number;
     employee!: Employee;
@@ -36,8 +43,6 @@ export class DetailsComponent implements OnInit {
                 employee => {
                     this.employee = employee;
                     this.loading = false;
-                    
-                    // Load related workflows and requests
                     this.loadWorkflows();
                     this.loadRequests();
                 },
@@ -68,7 +73,7 @@ export class DetailsComponent implements OnInit {
         this.requestService.getAll()
             .pipe(first())
             .subscribe(
-                requests => {
+                requests => {   
                     this.requests = requests.filter(r => r.employeeId === this.id);
                     this.requestsLoading = false;
                 },

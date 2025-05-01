@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { WorkflowService, EmployeeService, AlertService } from '@app/_services';
 import { Employee } from '@app/_models';
 
-@Component({ templateUrl: 'add-edit.component.html' })
+@Component({     
+    standalone: true,
+    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    templateUrl: 'add-edit.component.html' 
+})
 export class AddEditComponent implements OnInit {
     form!: FormGroup;
     id!: number;
@@ -36,7 +42,6 @@ export class AddEditComponent implements OnInit {
             description: ['']
         });
 
-        // Pre-populate employee if passed as query parameter
         const employeeId = this.route.snapshot.queryParams['employeeId'];
         if (employeeId) {
             this.form.patchValue({ employeeId });
@@ -69,16 +74,13 @@ export class AddEditComponent implements OnInit {
             );
     }
 
-    // convenience getter for easy access to form fields
     get f() { return this.form.controls; }
 
     onSubmit() {
         this.submitted = true;
 
-        // reset alerts on submit
         this.alertService.clear();
 
-        // stop here if form is invalid
         if (this.form.invalid) {
             return;
         }

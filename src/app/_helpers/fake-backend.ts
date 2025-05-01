@@ -6,9 +6,6 @@ import { delay, materialize, dematerialize } from 'rxjs/operators';
 import { AlertService } from '@app/_services';
 import { Role } from '@app/_models';
 
-// @ts-ignore: Disable implicit any warnings for this file
-/* tslint:disable:no-implicit-any */
-// array in local storage for accounts
 const accountsKey = 'angular-10-signup-verification-boilerplate-accounts';
 const departmentsKey = 'angular-user-management-departments';
 const employeesKey = 'angular-user-management-employees';
@@ -111,7 +108,6 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return deleteRequest();
                 
                 default:
-                    // pass through any requests not handled above
                     return next.handle(request);
             }
         }

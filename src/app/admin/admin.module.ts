@@ -1,4 +1,3 @@
-// src/app/admin/admin.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -13,11 +12,9 @@ import { OverviewComponent } from './overview.component';
         CommonModule,
         RouterModule,
         AdminRoutingModule,
-        // Import standalone components
         SubNavComponent,
         LayoutComponent,
         OverviewComponent
     ]
-    // No declarations since they are standalone components
 })
 export class AdminModule { }

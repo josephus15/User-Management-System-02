@@ -51,14 +51,12 @@
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         
-                                        <!-- Only show delete button for non-admin users -->
                                         <button *ngIf="account.role !== 'Admin'" (click)="deleteAccount(account.id)" class="btn btn-sm btn-outline-danger me-1" 
                                                 [disabled]="account.isDeleting">
                                             <span *ngIf="account.isDeleting" class="spinner-border spinner-border-sm"></span>
                                             <i *ngIf="!account.isDeleting" class="bi bi-trash"></i>
                                         </button>
 
-                                        <!-- Show activate/deactivate button for non-admin users -->
                                         <button *ngIf="account.role !== 'Admin'" (click)="toggleActivation(account)" 
                                                 class="btn btn-sm"
                                                 [ngClass]="{'btn-outline-success': !account.isActive, 'btn-outline-warning': account.isActive}"

@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { RequestService, AlertService } from '@app/_services';
 import { Request } from '@app/_models';
 
-@Component({ templateUrl: 'details.component.html' })
+@Component({ 
+    standalone: true,
+    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    templateUrl: 'details.component.html' 
+})
 export class DetailsComponent implements OnInit {
     id!: number;
     request!: Request;
@@ -33,7 +39,7 @@ export class DetailsComponent implements OnInit {
         
         this.loadRequestDetails();
     }
-
+    
     private loadRequestDetails() {
         this.requestService.getById(this.id)
             .pipe(first())
@@ -54,16 +60,13 @@ export class DetailsComponent implements OnInit {
             );
     }
 
-    // convenience getter for easy access to form fields
     get f() { return this.statusForm.controls; }
 
     onSubmit() {
         this.submitted = true;
 
-        // reset alerts on submit
         this.alertService.clear();
 
-        // stop here if form is invalid
         if (this.statusForm.invalid) {
             return;
         }
@@ -75,7 +78,7 @@ export class DetailsComponent implements OnInit {
                 () => {
                     this.alertService.success('Request status updated successfully');
                     this.updating = false;
-                    this.loadRequestDetails(); // Reload the updated request
+                    this.loadRequestDetails(); 
                 },
                 (error: any) => {
                     this.alertService.error('Error updating request status: ' + error);

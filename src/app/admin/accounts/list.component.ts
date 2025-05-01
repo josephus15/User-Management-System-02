@@ -30,7 +30,6 @@ export class ListComponent implements OnInit {
                 .pipe(first())
                 .subscribe({
                     next: () => {
-                        // Remove from the list completely
                         this.accounts = this.accounts.filter(x => x.id !== id);
                     },
                     error: (error: any) => {
@@ -44,8 +43,6 @@ export class ListComponent implements OnInit {
     toggleActivation(account: any) {
         if (confirm(`Are you sure you want to ${account.isActive ? 'deactivate' : 'activate'} this account?`)) {
             account.isToggling = true;
-            
-            // Use the update method with the new isActive status
             const updatedData = { isActive: !account.isActive };
             this.accountService.update(account.id, updatedData)
                 .pipe(first())

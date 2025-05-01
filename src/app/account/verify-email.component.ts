@@ -28,12 +28,12 @@ export class VerifyEmailComponent implements OnInit {
         private accountService: AccountService,
         private alertService: AlertService
     ) {
-        // Log all parameters for debugging
+
         console.log('Constructor - route params:', this.route.snapshot.queryParams);
     }
 
     ngOnInit() {
-        // Try different ways to get the token
+
         this.token = this.route.snapshot.queryParams['token'] || '';
         
         console.log('Verify Email Component Initialized');
@@ -47,7 +47,7 @@ export class VerifyEmailComponent implements OnInit {
             return;
         }
 
-        // Do NOT remove the token from the URL yet
+
         console.log('About to call verifyEmail with token:', this.token);
         this.verifyEmail(this.token);
     }
@@ -69,7 +69,7 @@ export class VerifyEmailComponent implements OnInit {
                     this.emailStatus = EmailStatus.Success;
                     this.alertService.success('Email verification successful, you can now login', { keepAfterRouteChange: true });
                     
-                    // Wait 2 seconds before redirecting so user can see success message
+
                     setTimeout(() => {
                         this.router.navigate(['../login'], { relativeTo: this.route });
                     }, 2000);
@@ -82,7 +82,7 @@ export class VerifyEmailComponent implements OnInit {
             });
     }
     
-    // For testing - allow manual verification
+
     manualVerify() {
         console.log('Manual verification with token:', this.token);
         this.loading = true;

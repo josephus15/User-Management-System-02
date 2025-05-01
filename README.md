@@ -54,6 +54,8 @@ npm run start:dev
 
 CREATE DATABASE `node-mysql-signup-verification-api`;
 
+use node-mysql-signup-verification-api;
+
 
 ### API Endpoints
 
