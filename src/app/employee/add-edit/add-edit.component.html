@@ -17,20 +17,6 @@
                     </div>
                     
                     <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()">
-                        <div class="mb-3" *ngIf="isAddMode">
-                            <label class="form-label">User Account</label>
-                            <select formControlName="accountId" class="form-select" 
-                                   [ngClass]="{ 'is-invalid': submitted && f.accountId.errors }">
-                                <option value="">-- Select User Account --</option>
-                                <option *ngFor="let account of accounts" [value]="account.id">
-                                    {{account.firstName}} {{account.lastName}} ({{account.email}})
-                                </option>
-                            </select>
-                            <div *ngIf="submitted && f.accountId.errors" class="invalid-feedback">
-                                <div *ngIf="f.accountId.errors.required">User Account is required</div>
-                            </div>
-                        </div>
-                        
                         <div class="mb-3">
                             <label class="form-label">Employee ID</label>
                             <input type="text" formControlName="employeeId" class="form-control" 
@@ -39,6 +25,38 @@
                             <div *ngIf="submitted && f.employeeId.errors" class="invalid-feedback">
                                 <div *ngIf="f.employeeId.errors.required">Employee ID is required</div>
                                 <div *ngIf="f.employeeId.errors.maxlength">Employee ID must be less than 20 characters</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" formControlName="firstName" class="form-control" 
+                                       [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                                <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                                    <div *ngIf="f.firstName.errors.required">First Name is required</div>
+                                    <div *ngIf="f.firstName.errors.maxlength">First Name must be less than 50 characters</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" formControlName="lastName" class="form-control" 
+                                       [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                                <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                                    <div *ngIf="f.lastName.errors.required">Last Name is required</div>
+                                    <div *ngIf="f.lastName.errors.maxlength">Last Name must be less than 50 characters</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" formControlName="email" class="form-control" 
+                                   [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                            <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                                <div *ngIf="f.email.errors.email">Please enter a valid email address</div>
+                                <div *ngIf="f.email.errors.maxlength">Email must be less than 100 characters</div>
                             </div>
                         </div>
                         
@@ -51,7 +69,7 @@
                                 <div *ngIf="f.position.errors.maxlength">Position must be less than 100 characters</div>
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label">Department</label>
                             <select formControlName="departmentId" class="form-select" 
@@ -89,7 +107,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-between mt-4">
-                            <a routerLink=".." class="btn btn-outline-secondary">
+                            <a routerLink="/employee" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left me-1"></i>Back to Employees
                             </a>
                             <button [disabled]="loading" class="btn btn-primary">

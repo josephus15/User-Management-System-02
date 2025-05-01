@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { EmployeeService, DepartmentService, AccountService, AlertService } from '@app/_services';
-import { Account, Department } from '@app/_models';
+import { EmployeeService, DepartmentService, AlertService } from '@app/_services';
+import { Department } from '@app/_models';
 
 @Component({ 
     standalone: true,
@@ -19,7 +19,6 @@ export class AddEditComponent implements OnInit {
     isAddMode!: boolean;
     loading = false;
     submitted = false;
-    accounts: Account[] = [];
     departments: Department[] = [];
 
     constructor(
@@ -28,7 +27,6 @@ export class AddEditComponent implements OnInit {
         private router: Router,
         private employeeService: EmployeeService,
         private departmentService: DepartmentService,
-        private accountService: AccountService,
         private alertService: AlertService
     ) {}
 
@@ -36,19 +34,20 @@ export class AddEditComponent implements OnInit {
         this.id = this.route.snapshot.params['id'];
         this.isAddMode = !this.id;
         
-        // Load accounts and departments
-        this.loadAccounts();
+        // Load departments
         this.loadDepartments();
         
         this.form = this.formBuilder.group({
-            accountId: ['', Validators.required],
             employeeId: ['', [Validators.required, Validators.maxLength(20)]],
+            firstName: ['', [Validators.required, Validators.maxLength(50)]],
+            lastName: ['', [Validators.required, Validators.maxLength(50)]],
+            email: ['', [Validators.email, Validators.maxLength(100)]],
             position: ['', [Validators.required, Validators.maxLength(100)]],
             departmentId: ['', Validators.required],
             hireDate: ['', Validators.required],
             status: ['Active', Validators.required]
         });
-        
+
         if (!this.isAddMode) {
             this.loading = true;
             this.employeeService.getById(this.id)
@@ -73,15 +72,6 @@ export class AddEditComponent implements OnInit {
                     }
                 );
         }
-    }
-
-    private loadAccounts() {
-        this.accountService.getAll()
-            .pipe(first())
-            .subscribe(
-                accounts => this.accounts = accounts,
-                error => this.alertService.error('Error loading accounts: ' + error)
-            );
     }
 
     private loadDepartments() {
