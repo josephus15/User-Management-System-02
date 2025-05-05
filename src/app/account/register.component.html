@@ -1,15 +1,17 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-7">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h3 class="my-0">Create Account</h3>
+            <div class="card border-0" style="box-shadow: none; padding: 30px;">
+                <div class="card-header bg-white text-center py-3 border-0">
+                    <h3 class="my-0" style="font-weight: 600; color: #333; margin-bottom: 15px;">Create Account</h3>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-0">
                     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                        <div class="mb-3">
-                            <label class="form-label">Title</label>
-                            <select formControlName="title" class="form-select" placeholder="Select your title">
+                        <div class="mb-4">
+                            <label class="form-label" style="font-weight: 500; color: #333;">Title</label>
+                            <select formControlName="title" class="form-select" 
+                                style="border-radius: 4px; border: 1px solid #ddd; padding: 10px 12px; height: 45px;"
+                                placeholder="Select your title">
                                 <option value="">Select your title</option>
                                 <option value="Mr">Mr</option>
                                 <option value="Mrs">Mrs</option>
@@ -19,18 +21,20 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">First Name</label>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label" style="font-weight: 500; color: #333;">First Name</label>
                                 <input type="text" formControlName="firstName" class="form-control" 
+                                    style="border-radius: 4px; border: 1px solid #ddd; padding: 10px 12px; height: 45px;"
                                     placeholder="Enter first name"
                                     [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
                                 <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
                                     <div *ngIf="f.firstName.errors.required">First Name is required</div>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Last Name</label>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label" style="font-weight: 500; color: #333;">Last Name</label>
                                 <input type="text" formControlName="lastName" class="form-control" 
+                                    style="border-radius: 4px; border: 1px solid #ddd; padding: 10px 12px; height: 45px;"
                                     placeholder="Enter last name"
                                     [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
                                 <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
@@ -39,9 +43,10 @@
                             </div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label class="form-label">Email Address</label>
+                        <div class="mb-4">
+                            <label class="form-label" style="font-weight: 500; color: #333;">Email Address</label>
                             <input type="email" formControlName="email" class="form-control" 
+                                style="border-radius: 4px; border: 1px solid #ddd; padding: 10px 12px; height: 45px;"
                                 placeholder="Enter your email"
                                 [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
                             <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
@@ -51,9 +56,10 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Password</label>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label" style="font-weight: 500; color: #333;">Password</label>
                                 <input type="password" formControlName="password" class="form-control" 
+                                    style="border-radius: 4px; border: 1px solid #ddd; padding: 10px 12px; height: 45px;"
                                     placeholder="Create password"
                                     [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
                                 <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
@@ -61,9 +67,10 @@
                                     <div *ngIf="f.password.errors.minlength">Password must be at least 6 characters</div>
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Confirm Password</label>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label" style="font-weight: 500; color: #333;">Confirm Password</label>
                                 <input type="password" formControlName="confirmPassword" class="form-control" 
+                                    style="border-radius: 4px; border: 1px solid #ddd; padding: 10px 12px; height: 45px;"
                                     placeholder="Confirm password"
                                     [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }" />
                                 <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
@@ -73,11 +80,12 @@
                             </div>
                         </div>
                         
-                        <div class="mb-3 form-check">
+                        <div class="mb-4 form-check">
                             <input type="checkbox" formControlName="acceptTerms" id="acceptTerms" 
                                 class="form-check-input" 
+                                style="margin-top: 0;"
                                 [ngClass]="{ 'is-invalid': submitted && f.acceptTerms.errors }" />
-                            <label for="acceptTerms" class="form-check-label">
+                            <label for="acceptTerms" class="form-check-label" style="color: #555;">
                                 I accept the <a href="#" class="text-primary">Terms &amp; Conditions</a>
                             </label>
                             <div *ngIf="submitted && f.acceptTerms.errors" class="invalid-feedback">
@@ -86,14 +94,15 @@
                         </div>
                         
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" [disabled]="loading" class="btn btn-primary py-2">
+                            <button type="submit" [disabled]="loading" class="btn py-2" 
+                                style="background-color: #4e73df; color: white; border: none; border-radius: 4px; font-weight: 600; text-transform: uppercase; height: 45px;">
                                 <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-                                <span *ngIf="!loading">Create Account</span>
+                                <span *ngIf="!loading">CREATE ACCOUNT</span>
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer bg-light py-3 text-center">
+                <div class="card-footer bg-white py-3 text-center border-0">
                     <div class="text-muted">Already have an account? 
                         <a routerLink="../login" class="text-primary">Sign In</a>
                     </div>
