@@ -1,73 +1,352 @@
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0"><i class="bi bi-list-check me-2"></i>Workflows</h2>
-                    <a routerLink="add" class="btn btn-light">
-                        <i class="bi bi-plus-circle me-1"></i> Add Workflow
-                    </a>
-                </div>
-                <div class="card-body p-4">
-                    <div *ngIf="loading" class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2">Loading workflows...</p>
-                    </div>
-                    
-                    <div *ngIf="!loading && workflows.length === 0" class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>No workflows found.
-                    </div>
-                    
-                    <div *ngIf="!loading && workflows.length > 0" class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Employee</th>
-                                    <th>Status</th>
-                                    <th>Created</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let workflow of workflows">
-                                    <td><strong>{{workflow.type}}</strong></td>
-                                    <td>
-                                        <span *ngIf="workflow.employee">
-                                            {{workflow.employee.account?.firstName}} {{workflow.employee.account?.lastName}}
-                                            <small class="text-muted">({{workflow.employee.employeeId}})</small>
-                                        </span>
-                                        <span *ngIf="!workflow.employee" class="text-muted">Unknown</span>
-                                    </td>
-                                    <td>
-                                        <span [ngClass]="{
-                                            'badge bg-primary': workflow.status === 'Pending',
-                                            'badge bg-success': workflow.status === 'Approved',
-                                            'badge bg-danger': workflow.status === 'Rejected'
-                                        }">
-                                            {{workflow.status}}
-                                        </span>
-                                    </td>
-                                    <td>{{workflow.created | date:'medium'}}</td>
-                                    <td class="text-end">
-                                        <a routerLink="details/{{workflow.id}}" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a routerLink="edit/{{workflow.id}}" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button (click)="deleteWorkflow(workflow.id)" [disabled]="deleting" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="workflows-container">
+    <div class="workflows-card">
+      <div class="workflows-header">
+        <div class="header-content">
+          <i class="bi bi-list-check"></i>
+          <h2>Workflows</h2>
         </div>
+        <a routerLink="add" class="add-workflow-btn">
+          <i class="bi bi-plus-circle"></i>
+          <span>Add Workflow</span>
+        </a>
+      </div>
+  
+      <div class="workflows-body">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading workflows...</p>
+        </div>
+        
+        <!-- Empty State -->
+        <div *ngIf="!loading && workflows.length === 0" class="empty-state">
+          <i class="bi bi-info-circle"></i>
+          <p>No workflows found.</p>
+        </div>
+        
+        <!-- Workflows Table -->
+        <div *ngIf="!loading && workflows.length > 0" class="table-container">
+          <table class="workflows-table">
+            <thead>
+              <tr>
+                <th class="type-col">Type</th>
+                <th class="employee-col">Employee</th>
+                <th class="status-col">Status</th>
+                <th class="created-col">Created</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let workflow of workflows">
+                <td class="workflow-type">
+                  <strong>{{workflow.type}}</strong>
+                </td>
+                <td class="workflow-employee">
+                  <span *ngIf="workflow.employee" class="employee-info">
+                    <span class="employee-name">{{workflow.employee.account?.firstName}} {{workflow.employee.account?.lastName}}</span>
+                    <span class="employee-id">({{workflow.employee.employeeId}})</span>
+                  </span>
+                  <span *ngIf="!workflow.employee" class="unknown-employee">Unknown</span>
+                </td>
+                <td class="workflow-status">
+                  <span class="status-badge" [ngClass]="{
+                    'pending': workflow.status === 'Pending',
+                    'approved': workflow.status === 'Approved',
+                    'rejected': workflow.status === 'Rejected'
+                  }">
+                    {{workflow.status}}
+                  </span>
+                </td>
+                <td class="workflow-created">
+                  {{workflow.created | date:'medium'}}
+                </td>
+                <td class="actions-cell">
+                  <div class="action-buttons">
+                    <a routerLink="details/{{workflow.id}}" class="action-btn view-btn" title="View">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a routerLink="edit/{{workflow.id}}" class="action-btn edit-btn" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <button (click)="deleteWorkflow(workflow.id)" [disabled]="deleting" 
+                            class="action-btn delete-btn" title="Delete">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  
+  <style>
+  .workflows-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  .workflows-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  
+  .workflows-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    color: white;
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .header-content i {
+    font-size: 1.5rem;
+  }
+  
+  .header-content h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .add-workflow-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: #4361ee;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .add-workflow-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+  }
+  
+  .workflows-body {
+    padding: 1.5rem;
+  }
+  
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1rem;
+  }
+  
+  .loading-state p {
+    margin: 0;
+    color: #495057;
+  }
+  
+  .spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: #4361ee;
+    animation: spin 1s linear infinite;
+  }
+  
+  .empty-state {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #495057;
+  }
+  
+  .empty-state i {
+    font-size: 1.25rem;
+    color: #4361ee;
+  }
+  
+  .empty-state p {
+    margin: 0;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .workflows-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .workflows-table thead {
+    background: #f8f9fa;
+  }
+  
+  .workflows-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .workflows-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+  }
+  
+  .workflow-type {
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .employee-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .employee-name {
+    font-weight: 500;
+  }
+  
+  .employee-id {
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  
+  .unknown-employee {
+    color: #6c757d;
+    font-style: italic;
+  }
+  
+  .workflow-created {
+    color: #4a5568;
+    font-size: 0.875rem;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .status-badge.pending {
+    background: rgba(67, 97, 238, 0.1);
+    color: #4361ee;
+  }
+  
+  .status-badge.approved {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+  }
+  
+  .status-badge.rejected {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+  
+  .actions-cell {
+    text-align: right;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .action-btn i {
+    font-size: 0.875rem;
+  }
+  
+  .view-btn {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+  }
+  
+  .view-btn:hover {
+    background: rgba(13, 110, 253, 0.2);
+  }
+  
+  .edit-btn {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+  }
+  
+  .edit-btn:hover {
+    background: rgba(108, 117, 125, 0.2);
+  }
+  
+  .delete-btn {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+  
+  .delete-btn:hover {
+    background: rgba(220, 53, 69, 0.2);
+  }
+  
+  .delete-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  @media (max-width: 768px) {
+    .workflows-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .add-workflow-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .workflows-table th, 
+    .workflows-table td {
+      padding: 0.75rem;
+    }
+    
+    .action-buttons {
+      flex-wrap: wrap;
+    }
+  }
+  </style>

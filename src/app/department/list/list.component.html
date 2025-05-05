@@ -1,63 +1,312 @@
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0"><i class="bi bi-building me-2"></i>Departments</h2>
-                    <a routerLink="add" class="btn btn-light">
-                        <i class="bi bi-plus-circle me-1"></i> Add Department
-                    </a>
-                </div>
-                <div class="card-body p-4">
-                    <div *ngIf="loading" class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2">Loading departments...</p>
-                    </div>
-                    
-                    <div *ngIf="!loading && departments.length === 0" class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>No departments found. Create your first department to get started.
-                    </div>
-                    
-                    <div *ngIf="!loading && departments.length > 0" class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Created</th>
-                                    <th>Employees</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let department of departments">
-                                    <td><strong>{{department.name}}</strong></td>
-                                    <td>{{department.description || 'N/A'}}</td>
-                                    <td>{{department.created | date:'medium'}}</td>
-                                    <td>
-                                        <span class="badge bg-primary" *ngIf="department.employees?.length">
-                                            {{department.employees?.length}}
-                                        </span>
-                                        <span class="text-muted" *ngIf="!department.employees?.length">
-                                            No employees
-                                        </span>
-                                    </td>
-                                    <td class="text-end">
-                                        <a routerLink="edit/{{department.id}}" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button (click)="deleteDepartment(department.id)" [disabled]="deleting" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="departments-container">
+    <div class="departments-card">
+      <div class="departments-header">
+        <div class="header-content">
+          <i class="bi bi-building"></i>
+          <h2>Departments</h2>
         </div>
+        <a routerLink="add" class="add-department-btn">
+          <i class="bi bi-plus-circle"></i>
+          <span>Add Department</span>
+        </a>
+      </div>
+  
+      <div class="departments-body">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading departments...</p>
+        </div>
+        
+        <!-- Empty State -->
+        <div *ngIf="!loading && departments.length === 0" class="empty-state">
+          <i class="bi bi-info-circle"></i>
+          <p>No departments found. Create your first department to get started.</p>
+        </div>
+        
+        <!-- Departments Table -->
+        <div *ngIf="!loading && departments.length > 0" class="table-container">
+          <table class="departments-table">
+            <thead>
+              <tr>
+                <th class="name-col">Name</th>
+                <th class="description-col">Description</th>
+                <th class="created-col">Created</th>
+                <th class="employees-col">Employees</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let department of departments">
+                <td class="department-name">
+                  <strong>{{department.name}}</strong>
+                </td>
+                <td class="department-description">
+                  {{department.description || 'N/A'}}
+                </td>
+                <td class="department-created">
+                  {{department.created | date:'medium'}}
+                </td>
+                <td class="department-employees">
+                  <span class="employees-count" *ngIf="department.employees?.length">
+                    {{department.employees?.length}}
+                  </span>
+                  <span class="no-employees" *ngIf="!department.employees?.length">
+                    No employees
+                  </span>
+                </td>
+                <td class="actions-cell">
+                  <div class="action-buttons">
+                    <a routerLink="edit/{{department.id}}" class="action-btn edit-btn" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <button (click)="deleteDepartment(department.id)" [disabled]="deleting" 
+                            class="action-btn delete-btn" title="Delete">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  
+  <style>
+  .departments-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  .departments-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  
+  .departments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    color: white;
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .header-content i {
+    font-size: 1.5rem;
+  }
+  
+  .header-content h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .add-department-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: #4361ee;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .add-department-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+  }
+  
+  .departments-body {
+    padding: 1.5rem;
+  }
+  
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1rem;
+  }
+  
+  .loading-state p {
+    margin: 0;
+    color: #495057;
+  }
+  
+  .spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: #4361ee;
+    animation: spin 1s linear infinite;
+  }
+  
+  .empty-state {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #495057;
+  }
+  
+  .empty-state i {
+    font-size: 1.25rem;
+    color: #4361ee;
+  }
+  
+  .empty-state p {
+    margin: 0;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .departments-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .departments-table thead {
+    background: #f8f9fa;
+  }
+  
+  .departments-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .departments-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+  }
+  
+  .department-name {
+    font-weight: 600;
+    color: #2d3748;
+  }
+  
+  .department-description {
+    color: #4a5568;
+  }
+  
+  .department-created {
+    color: #4a5568;
+    font-size: 0.875rem;
+  }
+  
+  .employees-count {
+    display: inline-block;
+    background: rgba(67, 97, 238, 0.1);
+    color: #4361ee;
+    padding: 0.35rem 0.75rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+  
+  .no-employees {
+    color: #6c757d;
+    font-size: 0.875rem;
+  }
+  
+  .actions-cell {
+    text-align: right;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .action-btn i {
+    font-size: 0.875rem;
+  }
+  
+  .edit-btn {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+  }
+  
+  .edit-btn:hover {
+    background: rgba(108, 117, 125, 0.2);
+  }
+  
+  .delete-btn {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+  }
+  
+  .delete-btn:hover {
+    background: rgba(220, 53, 69, 0.2);
+  }
+  
+  .delete-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  @media (max-width: 768px) {
+    .departments-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .add-department-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .departments-table th, 
+    .departments-table td {
+      padding: 0.75rem;
+    }
+    
+    .action-buttons {
+      flex-wrap: wrap;
+    }
+  }
+  </style>

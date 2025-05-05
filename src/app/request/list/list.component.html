@@ -1,75 +1,175 @@
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Requests</h2>
-                    <a routerLink="add" class="btn btn-light">
-                        <i class="bi bi-plus-circle me-1"></i> Add Request
-                    </a>
-                </div>
-                <div class="card-body p-4">
-                    <div *ngIf="loading" class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2">Loading requests...</p>
-                    </div>
-                    
-                    <div *ngIf="!loading && requests.length === 0" class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>No requests found.
-                    </div>
-                    
-                    <div *ngIf="!loading && requests.length > 0" class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Employee</th>
-                                    <th>Status</th>
-                                    <th>Items</th>
-                                    <th>Created</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let request of requests">
-                                    <td><strong>{{request.type}}</strong></td>
-                                    <td>
-                                        <span *ngIf="request.employee">
-                                            {{request.employee.account?.firstName}} {{request.employee.account?.lastName}}
-                                            <small class="text-muted">({{request.employee.employeeId}})</small>
-                                        </span>
-                                        <span *ngIf="!request.employee" class="text-muted">Unknown</span>
-                                    </td>
-                                    <td>
-                                        <span [ngClass]="{
-                                            'badge bg-primary': request.status === 'Pending',
-                                            'badge bg-success': request.status === 'Approved',
-                                            'badge bg-danger': request.status === 'Rejected'
-                                        }">
-                                            {{request.status}}
-                                        </span>
-                                    </td>
-                                    <td>{{request.requestItems?.length || 0}}</td>
-                                    <td>{{request.created | date:'medium'}}</td>
-                                    <td class="text-end">
-                                        <a routerLink="details/{{request.id}}" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a routerLink="edit/{{request.id}}" class="btn btn-sm btn-outline-primary me-1">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button (click)="deleteRequest(request.id)" [disabled]="deleting" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<div class="request-list-container">
+    <div class="request-list-card">
+      <!-- Header -->
+      <div class="list-header">
+        <div class="header-left">
+          <i class="bi bi-clipboard-check"></i>
+          <h2>Requests</h2>
         </div>
+        <a routerLink="add" class="add-btn">
+          <i class="bi bi-plus-circle me-1"></i> Add Request
+        </a>
+      </div>
+  
+      <!-- Body -->
+      <div class="list-body">
+        <!-- Loading -->
+        <div *ngIf="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading requests...</p>
+        </div>
+  
+        <!-- No Data -->
+        <div *ngIf="!loading && requests.length === 0" class="alert alert-info mt-3">
+          <i class="bi bi-info-circle me-2"></i>No requests found.
+        </div>
+  
+        <!-- Table -->
+        <div *ngIf="!loading && requests.length > 0" class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Type</th>
+                <th>Employee</th>
+                <th>Status</th>
+                <th>Items</th>
+                <th>Created</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let request of requests">
+                <td><strong>{{request.type}}</strong></td>
+                <td>
+                  <span *ngIf="request.employee">
+                    {{request.employee.account?.firstName}} {{request.employee.account?.lastName}}
+                    <small class="text-muted">({{request.employee.employeeId}})</small>
+                  </span>
+                  <span *ngIf="!request.employee" class="text-muted">Unknown</span>
+                </td>
+                <td>
+                  <span [ngClass]="{
+                    'badge bg-primary': request.status === 'Pending',
+                    'badge bg-success': request.status === 'Approved',
+                    'badge bg-danger': request.status === 'Rejected'
+                  }">{{request.status}}</span>
+                </td>
+                <td>{{request.requestItems?.length || 0}}</td>
+                <td>{{request.created | date:'medium'}}</td>
+                <td class="text-end">
+                  <a routerLink="details/{{request.id}}" class="btn btn-sm btn-outline-primary me-1">
+                    <i class="bi bi-eye"></i>
+                  </a>
+                  <a routerLink="edit/{{request.id}}" class="btn btn-sm btn-outline-primary me-1">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <button (click)="deleteRequest(request.id)" [disabled]="deleting" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  
+  <style>
+  .request-list-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .request-list-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  
+  .list-header {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .list-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .list-header i {
+    font-size: 1.5rem;
+  }
+  
+  .add-btn {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #e2e8f0;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .add-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+  }
+  
+  .list-body {
+    padding: 2rem;
+  }
+  
+  .spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid rgba(67, 97, 238, 0.2);
+    border-radius: 50%;
+    border-top-color: #4361ee;
+    animation: spin 1s linear infinite;
+  }
+  
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1rem;
+  }
+  
+  .loading-state p {
+    margin: 0;
+    color: #495057;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .table th, .table td {
+    vertical-align: middle;
+  }
+  
+  .table .btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  </style>
+  

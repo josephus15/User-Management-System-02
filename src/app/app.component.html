@@ -1,5 +1,5 @@
-<div class="app-container" [ngClass]="{ 'bg-light': account }">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm" *ngIf="account">
+<div class="app-container" [ngClass]="{ 'bg-page': account }">
+    <nav class="navbar navbar-expand-lg custom-navbar shadow-sm" *ngIf="account">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">User Management System</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
@@ -36,8 +36,48 @@
     </nav>
 
     <router-outlet name="subnav"></router-outlet>
-    
     <alert></alert>
-    
     <router-outlet></router-outlet>
 </div>
+
+<style>
+:root {
+    --navbar-bg: linear-gradient(135deg, #e0f2fe 0%, #f6dbfe 100%);
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --link-hover: #2563eb;
+    --card-radius: 1rem;
+}
+
+.app-container {
+    min-height: 100vh;
+}
+
+.bg-page {
+    background: var(--navbar-bg);
+    min-height: 100vh;
+}
+
+.custom-navbar {
+    background: var(--navbar-bg);
+    border-radius: 0 0 12px 12px;
+}
+
+.navbar-brand {
+    color: var(--text-dark);
+    font-size: 1.4rem;
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+    transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+    color: var(--link-hover) !important;
+}
+</style>
