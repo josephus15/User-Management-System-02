@@ -1,11 +1,11 @@
 {
     "database": {
-        "host": "localhost",
+        "host": "153.92.15.31",
         "port": 3306,
-        "user": "root",
-        "password": "",
-        "database": "user-management-system"
-        },
+        "user": "u875409848_amama",
+        "password": "m>G>4T42",
+        "database": "u875409848_amama"
+    },
         "secret": "TcxtoIgRRbUqqgW174x1zAA==",
         "emailFrom": "info@user-management-system.com",
         "smtpOptions": {  
