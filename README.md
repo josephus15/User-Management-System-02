@@ -33,14 +33,15 @@ Edit
     "password": "your_db_password",
     "database": "ums_api_db"
   },
+  # ETHERNAL EMAIL ACCOUNT
   "secret": "YourSecretKeyHere",
   "emailFrom": "info@yourdomain.com",
   "smtpOptions": {
     "host": "smtp.example.com",
     "port": 587,
     "auth": {
-      "user": "your_smtp_user",
-      "pass": "your_smtp_pass"
+      "user": "erick.shanahan@ethereal.email",
+        "pass": "EDUugw48M7FsmzfFjU",
     }
   }
 }
