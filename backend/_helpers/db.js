@@ -1,46 +1,44 @@
 const config = require('../config.json');
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('sequelize');
+require('dotenv').config(); // Add this line at the top
 
 module.exports = db = {};
 
 initialize();
 
 async function initialize() {
-    // Database configuration
-    const { host, port, user, password, database } = config.database;
-    
+    // Use environment variables if available, otherwise fall back to config.json
+    const dbConfig = {
+        host: process.env.DB_HOST || config.database.host,
+        port: process.env.DB_PORT || config.database.port || 3306,
+        user: process.env.DB_USER || config.database.user,
+        password: process.env.DB_PASSWORD || config.database.password,
+        database: process.env.DB_NAME || config.database.database
+    };
+
     // Test MySQL connection first
     try {
-        const testConnection = await mysql.createConnection({ 
-            host, 
-            port, 
-            user, 
-            password 
+        const connection = await mysql.createConnection({
+            host: dbConfig.host,
+            port: dbConfig.port,
+            user: dbConfig.user,
+            password: dbConfig.password
         });
-        console.log(`Connected to MySQL server as id ${testConnection.threadId}`);
-        await testConnection.end();
+        console.log(`Connected to MySQL server as id ${connection.threadId}`);
+        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbConfig.database}\`;`);
+        await connection.end();
     } catch (err) {
-        console.error('MySQL connection test failed:', err);
+        console.error('Database connection failed:', err);
         throw err;
     }
 
-    // Create database if not exists
-    const creationConnection = await mysql.createConnection({ 
-        host, 
-        port, 
-        user, 
-        password 
-    });
-    await creationConnection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
-    await creationConnection.end();
-
     // Initialize Sequelize
-    const sequelize = new Sequelize(database, user, password, { 
-        host,
-        port,
+    const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
+        host: dbConfig.host,
+        port: dbConfig.port,
         dialect: 'mysql',
-        logging: console.log, // Optional: enable logging
+        logging: console.log,
         pool: {
             max: 5,
             min: 0,
@@ -52,13 +50,13 @@ async function initialize() {
     // Test Sequelize connection
     try {
         await sequelize.authenticate();
-        console.log('Sequelize connection has been established successfully.');
+        console.log('Sequelize connection established successfully.');
     } catch (error) {
         console.error('Unable to connect to the database:', error);
         throw error;
     }
 
-    // Define all models
+    // Define all models (YOUR EXISTING CODE)
     db.Account = require('../accounts/account.model')(sequelize);
     db.RefreshToken = require('../accounts/refresh-token.model')(sequelize);
     db.Employee = require('../employees/employee.model')(sequelize);
@@ -67,26 +65,22 @@ async function initialize() {
     db.Request = require('../requests/request.model')(sequelize);
     db.RequestItem = require('../requests/request-item.model')(sequelize);
 
-    // Define relationships
-    // Account relationships
+    // Define relationships (YOUR EXISTING CODE)
     db.Account.hasMany(db.RefreshToken, { onDelete: 'CASCADE' });
     db.RefreshToken.belongsTo(db.Account);
-
-    // Employee relationships
+    
     db.Account.hasOne(db.Employee);
     db.Employee.belongsTo(db.Account);
-
+    
     db.Department.hasMany(db.Employee);
     db.Employee.belongsTo(db.Department);
-
-    // Workflow relationships
+    
     db.Employee.hasMany(db.Workflow);
     db.Workflow.belongsTo(db.Employee);
-
-    // Request relationships
+    
     db.Employee.hasMany(db.Request);
     db.Request.belongsTo(db.Employee);
-
+    
     db.Request.hasMany(db.RequestItem, { onDelete: 'CASCADE' });
     db.RequestItem.belongsTo(db.Request);
 
