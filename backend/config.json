@@ -1,23 +1,19 @@
 {
-  "development": {
-    "username": "u875409848_cordova",
-    "password": "9T2Z5$3UKkgSYzE",
-    "database": "u875409848_cordova",
+  "database": {
     "host": "153.92.15.31",
-    "dialect": "mysql"
+    "port": 3306,
+    "user": "u875409848_cordova",
+    "password": "9T2Z5$3UKkgSYzE",
+    "database": "u875409848_cordova"
   },
-  "test": {
-    "username": "u875409848_cordova",
-    "password": "9T2Z5$3UKkgSYzE",
-    "database": "u875409848_cordova",
-    "host": "153.92.15.31",
-    "dialect": "mysql"
-  },
-  "production": {
-    "username": "u875409848_cordova",
-    "password": "9T2Z5$3UKkgSYzE",
-    "database": "u875409848_cordova",
-    "host": "153.92.15.31",
-    "dialect": "mysql"
+  "secret": "TcxtoIgRRbUqagW174x1zAA==",
+  "emailFrom": "josephuserl15@gmail.com",
+  "smtpOptions": {
+    "host": "smtp.ethereal.email",
+    "port": 587,
+    "auth": {
+      "user": "erick.shanahan@ethereal.email",
+      "pass": "EDUgw48M7FsmzfFjU"
+    }
   }
 }
